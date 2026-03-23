@@ -159,14 +159,41 @@ curl -I https://api.telegram.org
 
 ## 🔍 權限驗證
 
-運行以下命令測試權限是否正確配置：
+### 方法 1：使用內置測試腳本（推薦）
+
+我們提供了自動化測試腳本：
 
 ```bash
 # 進入 bot 目錄
 cd hedda-telegram-bot
 
-# 創建測試腳本
-cat > test-permissions.sh << 'EOF'
+# 運行權限測試
+./test-permissions.sh
+```
+
+這個腳本會自動測試：
+- ✅ 文件訪問權限（Documents、Desktop、Downloads、Library）
+- ✅ 命令執行權限（Bash、Shell 命令）
+- ✅ 網絡連接（Telegram API、GitHub、DNS）
+- ✅ 文件讀寫能力
+- ✅ Bun 運行環境
+- ✅ Claude CLI（如果安裝）
+
+測試結果會顯示：
+- 🎉 100% 通過 = 完美配置，可以使用
+- ⚠️ 80%+ 通過 = 大部分正常，檢查失敗項
+- ❌ <80% 通過 = 需要配置權限
+
+### 方法 2：手動測試
+
+如果想手動驗證，運行以下命令：
+
+```bash
+# 進入 bot 目錄（如果使用方法 1，這部分可以跳過）
+cd hedda-telegram-bot
+
+# 創建測試腳本（如果已運行方法 1，這個腳本已存在）
+cat > manual-test.sh << 'EOF'
 #!/bin/bash
 echo "🔍 測試 macOS 權限..."
 echo ""

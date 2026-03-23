@@ -22,6 +22,11 @@ Bot 需要以下权限才能正常工作：
 
 **好消息**：安装脚本会自动检测并引导你完成授权！
 
+**快速测试权限**：
+```bash
+./test-permissions.sh
+```
+
 如需详细说明，查看：[MACOS_PERMISSIONS.md](./MACOS_PERMISSIONS.md)
 
 ## ⚡ 一键安装
