@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.0.3] - 2026-03-24
+
+### 🚀 重大升級
+
+#### SDK 版本升級（解決並發崩潰）
+- ⬆️ **升級 Claude Agent SDK** - `0.1.76` → `0.2.81` (跨越 105 個版本！)
+  - 修復 "API Error: 400 due to tool use concurrency issues" 崩潰
+  - 修復 WebFetch 工具執行時崩潰
+  - 修復多工具並發調用失敗
+  - 修復 Claude Code 進程意外退出 (exit code 1)
+  - 改進錯誤處理和恢復機制
+  - 更好的性能和穩定性
+
+- 📚 **添加 SDK 升級文檔** - `SDK_UPGRADE_FIX.md`
+  - 詳細的問題診斷
+  - 完整的升級步驟
+  - 測試驗證方法
+  - 故障排除指南
+
+**受影響**: 所有用戶
+**優先級**: 🔴 緊急 - 核心功能無法使用
+**升級方式**: `git pull && rm -rf node_modules bun.lockb && bun install`
+
+---
+
 ## [1.0.2] - 2026-03-24
 
 ### 🔧 Critical Hotfix
