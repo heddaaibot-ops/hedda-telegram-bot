@@ -1,0 +1,17 @@
+{
+  "name": "smart-transcribe",
+  "version": "1.0.0",
+  "description": "智能轉錄路由器：自動選擇最佳工具（YouTube→NotebookLM，影片→faster-whisper），自動清理臨時檔案",
+  "author": "Piggyx",
+  "tags": ["transcription", "whisper", "youtube", "notebooklm", "twitter", "auto-cleanup"],
+  "triggers": [
+    {
+      "type": "keyword",
+      "pattern": "(?i)(轉錄|transcribe|字幕|逐字稿)",
+      "description": "偵測轉錄需求"
+    }
+  ],
+  "dependencies": {
+    "skills": ["faster-whisper", "anything-to-notebooklm"]
+  }
+}

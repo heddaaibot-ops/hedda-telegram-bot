@@ -1,0 +1,73 @@
+name: twitter-smart-router
+version: 1.1.2
+author: Hedda & Piggyx
+description: Twitter 智能路由器 - 自動選擇最經濟的方式抓取 Twitter 內容（Bird CLI 免費 → twitterapi 付費 → Playwright 備援）
+category: twitter
+tags:
+  - twitter
+  - smart-router
+  - bird-cli
+  - twitterapi
+  - automation
+  - cost-optimization
+
+installation:
+  dependencies:
+    - node
+    - npm install -g @steipete/bird
+  optional:
+    - playwright (用於最後備援)
+
+usage:
+  command: node twitter-smart-router.js <twitter-url> [options]
+  examples:
+    - description: 抓取單條推文
+      command: node twitter-smart-router.js https://x.com/elonmusk/status/123456
+    - description: 抓取用戶時間軸
+      command: node twitter-smart-router.js https://twitter.com/elonmusk
+    - description: 搜尋推文
+      command: node twitter-smart-router.js "https://x.com/search?q=bitcoin"
+    - description: 顯示詳細執行過程
+      command: node twitter-smart-router.js <url> --verbose
+    - description: 輸出 JSON 格式
+      command: node twitter-smart-router.js <url> --json
+    - description: 強制使用特定方案
+      command: node twitter-smart-router.js <url> --force bird
+
+features:
+  - 智能選擇最經濟的抓取方案
+  - 自動載入 Twitter cookies 認證
+  - 支援單條推文、用戶時間軸、搜尋
+  - 過濾 info 訊息，輸出乾淨
+  - 明確的錯誤提示
+  - 可強制使用特定方案
+
+routing_strategy:
+  tweet:
+    - bird (免費)
+    - twitterapi (備用)
+    - playwright (最後)
+  profile:
+    - twitterapi (完整數據)
+    - bird (備用)
+    - playwright (最後)
+  search:
+    - twitterapi (最穩定)
+    - bird (備用)
+    - playwright (最後)
+
+requirements:
+  - Twitter cookies 必須存在於 /tmp/twitter_cookies.sh
+  - 執行 hedda-extract-twitter-cookies 提取 cookies
+  - twitterapi.io API key（選用，放在 crypto-news-config.json）
+
+outputs:
+  - 成功時輸出推文內容
+  - 失敗時輸出明確錯誤訊息
+  - verbose 模式顯示完整路由日誌
+
+notes:
+  - v1.1.2 改用 zsh，過濾 info 訊息，更穩定
+  - 沒有 cookies 時會明確提示
+  - 可在其他 JS 程式中 require 使用
+  - 支援批量抓取（見範例程式）

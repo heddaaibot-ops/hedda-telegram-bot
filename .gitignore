@@ -1,0 +1,44 @@
+# Environment variables and secrets
+.env
+.env.local
+.env.production
+
+# Logs
+*.log
+bot.log
+bot-error.log
+startup.log
+activity.log
+
+# Session data
+/tmp/claude-telegram-sessions/
+/tmp/telegram-bot/
+
+# Bun
+node_modules/
+bun.lockb
+
+# TypeScript
+dist/
+*.tsbuildinfo
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Personal data
+memory/*.md
+!memory/MEMORY.md.template
+daily-logs/
+
+# Temporary files
+*.tmp
+*.temp

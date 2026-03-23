@@ -1,0 +1,47 @@
+name: hedda-extract-twitter-cookies
+version: 1.0.0
+author: Hedda & Piggyx
+description: 從另一台 Mac 的 Safari cookies 提取 Twitter 登入資訊，自動計算剩餘天數
+category: twitter
+tags:
+  - twitter
+  - cookies
+  - safari
+  - authentication
+  - bird-cli
+
+installation:
+  dependencies:
+    - python3
+    - pip3 install binarycookies
+    - npm install -g @steipete/bird
+
+usage:
+  command: ./extract-twitter-cookies.sh <safari-cookies.zip>
+  examples:
+    - description: 提取 cookies
+      command: ./extract-twitter-cookies.sh ~/Downloads/safari-cookies.zip
+    - description: 讀取推文
+      command: twitter-read "https://x.com/user/status/123"
+    - description: 讀取使用者推文
+      command: twitter-user elonmusk -n 10
+    - description: 搜尋推文
+      command: twitter-search "crypto" -n 20
+
+features:
+  - 自動解析 Safari binarycookies 格式
+  - 提取 auth_token 和 ct0
+  - 計算 cookies 剩餘有效天數
+  - 建立簡化命令（twitter-read, twitter-user, twitter-search）
+  - 安全儲存到 ~/.twitter-cookies/
+
+outputs:
+  - ~/.twitter-cookies/cookies.sh
+  - ~/.twitter-cookies/twitter-read.sh
+  - ~/.twitter-cookies/twitter-user.sh
+  - ~/.twitter-cookies/twitter-search.sh
+
+notes:
+  - Cookies 通常有效期 7-14 天
+  - 需要在源頭 Mac 給終端機「完全磁碟取用權限」
+  - 不要分享 cookies.sh 檔案

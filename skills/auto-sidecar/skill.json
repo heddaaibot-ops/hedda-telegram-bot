@@ -1,0 +1,8 @@
+{
+  "name": "連結iPad",
+  "description": "自動連接 iPad「Hedda🦋」作為第二螢幕 (Sidecar)",
+  "version": "2.0.0",
+  "author": "Claude",
+  "command": "connect-ipad.sh",
+  "aliases": ["connect-ipad", "ipad", "sidecar", "連接iPad"]
+}

@@ -1,0 +1,31 @@
+{
+  "name": "extract-browser-cookies",
+  "version": "1.0.0",
+  "description": "從瀏覽器（Chrome/Brave/Edge）提取特定網站的 cookies，用於自動化登錄和 API 訪問",
+  "author": "Hedda AI",
+  "tags": ["cookies", "browser", "automation", "twitter", "authentication"],
+  "main": "extract-cookies.py",
+  "dependencies": {
+    "python3": ">=3.8"
+  },
+  "usage": {
+    "command": "python3 extract-cookies.py [網站名稱]",
+    "examples": [
+      "python3 extract-cookies.py twitter",
+      "python3 extract-cookies.py github",
+      "python3 extract-cookies.py reddit"
+    ]
+  },
+  "features": [
+    "支援 Chrome/Brave/Edge 等 Chromium 瀏覽器",
+    "自動複製數據庫避免鎖定",
+    "輸出 Playwright 兼容格式",
+    "顯示關鍵登錄 cookies（如 auth_token）",
+    "安全：不會修改原始瀏覽器數據"
+  ],
+  "notes": [
+    "需要目標網站已在瀏覽器中登錄",
+    "Cookies 保存在 ~/.config/[網站名]-cookies.json",
+    "可用於 Playwright/Puppeteer 自動化腳本"
+  ]
+}
