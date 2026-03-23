@@ -215,7 +215,7 @@ class ClaudeSession {
       this.lastWarningLevel = 0;
     }
 
-    // Inject current date/time and memory loading instruction at session start
+    // Inject current date/time and optional memory loading at session start
     let messageToSend = message;
     if (isNewSession) {
       const now = new Date();
@@ -232,15 +232,20 @@ class ClaudeSession {
         }
       )}]\n\n`;
 
-      // Auto-load memory for piggyx
-      const memoryPrefix = `🧠 載入記憶中...\n\n請讀取核心記憶檔案：
-/Users/heddaai/clawd/piggyx/MEMORY.md
-
-讀取完成後，回應：「✅ 記憶已載入！我記得你了 Hedda 姐姐 🩵」
-
-然後再處理以下訊息：
-
-`;
+      // Optional: Auto-load memory if MEMORY.md exists in project
+      let memoryPrefix = "";
+      const memoryPath = process.env.MEMORY_FILE_PATH;
+      if (memoryPath) {
+        try {
+          // Check if file exists and is readable
+          const memoryFile = Bun.file(memoryPath);
+          if (await memoryFile.exists()) {
+            memoryPrefix = `🧠 Loading memory...\n\nPlease read the core memory file at:\n${memoryPath}\n\nThen proceed with the following message:\n\n`;
+          }
+        } catch (error) {
+          console.warn(`Memory file not accessible: ${memoryPath}`);
+        }
+      }
 
       messageToSend = datePrefix + memoryPrefix + message;
     } else if (this.messageCount % 10 === 0 && this.messageCount > 0) {
