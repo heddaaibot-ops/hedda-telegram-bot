@@ -103,6 +103,173 @@ async function checkRequirements(): Promise<boolean> {
   return true;
 }
 
+// 检查和引导 macOS 权限
+async function checkMacOSPermissions(): Promise<void> {
+  printHeader("检查 macOS 权限");
+
+  if (process.platform !== "darwin") {
+    printInfo("非 macOS 系统，跳过权限检查");
+    return;
+  }
+
+  printInfo("Bot 需要以下权限才能正常工作：");
+  console.log("");
+
+  // 1. 检查完整磁盘访问权限
+  print("1️⃣  完整磁盘访问权限", "bright");
+  print("   允许 Bot 访问所有文件和目录", "dim");
+
+  // 尝试访问受保护的目录来测试权限
+  const testPaths = [
+    join(homedir(), "Library/Application Support"),
+    join(homedir(), "Documents"),
+    join(homedir(), "Desktop"),
+  ];
+
+  let hasFullDiskAccess = true;
+  for (const testPath of testPaths) {
+    try {
+      if (existsSync(testPath)) {
+        // 尝试列出目录
+        const proc = Bun.spawn(["ls", testPath], {
+          stdout: "pipe",
+          stderr: "pipe",
+        });
+        await proc.exited;
+        if (proc.exitCode !== 0) {
+          hasFullDiskAccess = false;
+          break;
+        }
+      }
+    } catch (error) {
+      hasFullDiskAccess = false;
+      break;
+    }
+  }
+
+  if (hasFullDiskAccess) {
+    printSuccess("已授予完整磁盘访问权限");
+  } else {
+    printWarning("未检测到完整磁盘访问权限");
+    print("");
+    print("   需要手动授权：", "yellow");
+    print("   1. 打开「系统设置」→「隐私与安全性」→「完整磁盘访问权限」", "dim");
+    print("   2. 点击「+」按钮", "dim");
+    print("   3. 添加你正在使用的终端应用：", "dim");
+    print("      - Terminal.app: /Applications/Utilities/Terminal.app", "dim");
+    print("      - iTerm.app: /Applications/iTerm.app", "dim");
+    print("      - Warp.app: /Applications/Warp.app", "dim");
+    print("   4. 重启终端应用", "dim");
+    print("");
+
+    const shouldContinue = await prompt("是否已完成授权？(y/n)", "n");
+    if (shouldContinue.toLowerCase() !== "y") {
+      printWarning("请完成授权后重新运行安装脚本");
+      process.exit(0);
+    }
+  }
+
+  console.log("");
+
+  // 2. 检查开发者工具权限
+  print("2️⃣  开发者工具", "bright");
+  print("   允许终端执行命令和脚本", "dim");
+
+  try {
+    // 测试是否可以执行 bash 命令
+    const proc = Bun.spawn(["bash", "-c", "echo test"], {
+      stdout: "pipe",
+      stderr: "pipe",
+    });
+    await proc.exited;
+
+    if (proc.exitCode === 0) {
+      printSuccess("Bash 命令执行权限正常");
+    } else {
+      printWarning("Bash 命令执行可能受限");
+    }
+  } catch (error) {
+    printError("无法执行 Bash 命令");
+    print("");
+    print("   可能需要：", "yellow");
+    print("   1. 打开「系统设置」→「隐私与安全性」→「开发者工具」", "dim");
+    print("   2. 确保你的终端应用在列表中", "dim");
+    print("");
+  }
+
+  console.log("");
+
+  // 3. 检查网络权限
+  print("3️⃣  网络连接", "bright");
+  print("   允许 Bot 连接 Telegram 和 Claude API", "dim");
+
+  try {
+    // 测试网络连接
+    const testUrl = "https://api.telegram.org";
+    const response = await fetch(testUrl, { method: "HEAD" });
+    if (response.ok || response.status === 401) {
+      printSuccess("网络连接正常");
+    } else {
+      printWarning("网络连接可能受限");
+    }
+  } catch (error) {
+    printWarning("无法测试网络连接，可能需要：");
+    print("   - 检查防火墙设置", "dim");
+    print("   - 确保终端应用可以访问网络", "dim");
+  }
+
+  console.log("");
+
+  // 4. 文件权限检查
+  print("4️⃣  文件读写权限", "bright");
+  print("   允许 Bot 创建和修改文件", "dim");
+
+  try {
+    // 创建测试目录
+    const testDir = join(process.cwd(), ".test-permissions");
+    mkdirSync(testDir, { recursive: true });
+
+    // 测试写入文件
+    const testFile = join(testDir, "test.txt");
+    writeFileSync(testFile, "test");
+
+    // 测试读取文件
+    const content = readFileSync(testFile, "utf-8");
+
+    // 清理测试文件
+    const rmProc = Bun.spawn(["rm", "-rf", testDir]);
+    await rmProc.exited;
+
+    if (content === "test") {
+      printSuccess("文件读写权限正常");
+    }
+  } catch (error) {
+    printError("文件读写权限不足");
+    print("   请确保当前用户对项目目录有读写权限", "dim");
+  }
+
+  console.log("");
+
+  // 5. 提供快捷方式打开系统设置
+  print("💡 快速访问系统设置", "bright");
+  const openSettings = await prompt("是否打开「隐私与安全性」设置？(y/n)", "n");
+
+  if (openSettings.toLowerCase() === "y") {
+    try {
+      // 打开隐私与安全性设置
+      Bun.spawn(["open", "x-apple.systempreferences:com.apple.preference.security?Privacy"]);
+      printSuccess("已打开系统设置，请检查权限配置");
+      print("");
+      printWarning("请在完成权限设置后按 Enter 继续...");
+      await prompt("");
+    } catch (error) {
+      printWarning("无法自动打开系统设置，请手动打开");
+    }
+  }
+
+  console.log("");
+}
+
 // 配置向导
 async function configurationWizard(): Promise<Record<string, string>> {
   printHeader("配置向导");
@@ -432,31 +599,34 @@ async function main() {
       process.exit(1);
     }
 
-    // 2. 配置向导
+    // 2. 检查 macOS 权限
+    await checkMacOSPermissions();
+
+    // 3. 配置向导
     const config = await configurationWizard();
 
-    // 3. 生成配置文件
+    // 4. 生成配置文件
     generateEnvFile(config);
 
-    // 4. 安装依赖
+    // 5. 安装依赖
     await installDependencies();
 
-    // 5. 创建目录
+    // 6. 创建目录
     createDirectories();
 
-    // 6. 复制 skills
+    // 7. 复制 skills
     await copySkills();
 
-    // 7. 设置 MCP
+    // 8. 设置 MCP
     setupMCP();
 
-    // 8. 设置记忆系统
+    // 9. 设置记忆系统
     setupMemory();
 
-    // 9. 设置 LaunchAgent（可选）
+    // 10. 设置 LaunchAgent（可选）
     await setupLaunchAgent();
 
-    // 10. 显示完成信息
+    // 11. 显示完成信息
     showCompletionMessage();
 
   } catch (error) {

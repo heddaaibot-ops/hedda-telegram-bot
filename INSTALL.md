@@ -10,6 +10,19 @@
 2. **Bun** 已安装 (如果没有，先安装：`curl -fsSL https://bun.sh/install | bash`)
 3. **Claude CLI** 或 Anthropic API Key
 4. **Telegram Bot Token** (从 @BotFather 获取)
+5. **macOS 权限** ⭐ 重要！
+
+### 🔐 macOS 权限设置
+
+Bot 需要以下权限才能正常工作：
+
+1. **完整磁盘访问权限** - 必需
+2. **开发者工具权限** - 必需
+3. **网络连接权限** - 必需
+
+**好消息**：安装脚本会自动检测并引导你完成授权！
+
+如需详细说明，查看：[MACOS_PERMISSIONS.md](./MACOS_PERMISSIONS.md)
 
 ## ⚡ 一键安装
 

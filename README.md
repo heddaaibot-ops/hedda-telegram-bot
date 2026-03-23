@@ -38,6 +38,9 @@
 - **macOS** (专为 Mac 优化)
 - **Bun** 1.0+ (JavaScript 运行时)
 - **Claude CLI** (推荐) 或 Anthropic API Key
+- **macOS 权限** - 完整磁盘访问、开发者工具 ([详细说明](./MACOS_PERMISSIONS.md))
+
+> ⭐ **重要**：安装时会自动检测并引导你完成 macOS 权限设置
 
 ### 快速开始
 
@@ -60,13 +63,14 @@ bun run src/index.ts
 互动式安装会引导你完成：
 
 1. ✅ 检查系统要求（Bun、Claude CLI）
-2. 🔑 配置 Telegram Bot Token
-3. 👤 设置授权用户 ID
-4. 🎙️ 配置 OpenAI API Key（可选，用于语音）
-5. 📦 安装依赖
-6. 🛠️ 配置 MCP 服务器
-7. 🧠 设置记忆系统
-8. 🚀 配置开机自启动（可选）
+2. 🔐 检查 macOS 权限（自动引导授权）
+3. 🔑 配置 Telegram Bot Token
+4. 👤 设置授权用户 ID
+5. 🎙️ 配置 OpenAI API Key（可选，用于语音）
+6. 📦 安装依赖
+7. 🛠️ 配置 MCP 服务器
+8. 🧠 设置记忆系统
+9. 🚀 配置开机自启动（可选）
 
 ## 🎮 使用指南
 
