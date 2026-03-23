@@ -1,7 +1,8 @@
 import { appendFileSync, existsSync, mkdirSync } from "fs";
-import { dirname } from "path";
+import { dirname, resolve } from "path";
 
-const LOG_DIR = "/Users/heddaai/clawd/piggyxbot";
+// 使用環境變量或項目根目錄
+const LOG_DIR = process.env.LOG_DIR || resolve(process.cwd(), "logs");
 const LOG_FILE = `${LOG_DIR}/activity.log`;
 
 // 確保日誌目錄存在

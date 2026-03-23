@@ -5,6 +5,7 @@
 
 # Logs
 *.log
+logs/
 bot.log
 bot-error.log
 startup.log

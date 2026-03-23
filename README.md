@@ -50,6 +50,8 @@ cd hedda-telegram-bot
 bun run setup.ts
 
 # 3. 启动 bot
+./start.sh
+# 或者直接用 bun
 bun run src/index.ts
 ```
 
@@ -190,18 +192,87 @@ hedda-telegram-bot/
 ### 开发模式
 
 ```bash
+# 监视模式（代码改动自动重启）
 bun run --watch src/index.ts
+
+# 或使用启动脚本
+./start.sh
 ```
 
-### 生产模式
+### 生产模式 - 保持在线
+
+Bot 具备三层保护机制确保持续运行：
+
+#### 1. 内置自动重启（指数退避）
+
+Bot 自带崩溃恢复机制：
+- ✅ 自动检测异常退出
+- ✅ 指数退避重启：5s → 10s → 20s → 60s（最大）
+- ✅ 无限重试直到成功
+- ✅ 特殊处理 409 错误（多实例冲突）
+
+**无需额外配置，开箱即用！**
+
+#### 2. macOS LaunchAgent（推荐）
+
+安装时可选择配置 LaunchAgent，实现：
+- 🚀 开机自动启动
+- 🔄 进程崩溃自动重启
+- 📝 系统级日志管理
 
 ```bash
-# 使用 macOS LaunchAgent（开机自启动）
+# 启动服务
 launchctl load ~/Library/LaunchAgents/com.hedda.telegram-bot.plist
+
+# 停止服务
+launchctl unload ~/Library/LaunchAgents/com.hedda.telegram-bot.plist
+
+# 查看状态
+launchctl list | grep hedda
 
 # 查看日志
 tail -f bot.log
 tail -f bot-error.log
+```
+
+#### 3. 手动使用 PM2（可选）
+
+如需更高级的进程管理：
+
+```bash
+# 安装 PM2
+npm install -g pm2
+
+# 启动 bot
+pm2 start "bun run src/index.ts" --name hedda-bot
+
+# 保存配置（开机自启动）
+pm2 save
+pm2 startup
+
+# 管理命令
+pm2 list          # 查看所有进程
+pm2 logs hedda-bot # 查看日志
+pm2 restart hedda-bot # 重启
+pm2 stop hedda-bot    # 停止
+```
+
+### 健康监控
+
+Bot 提供多种方式监控运行状态：
+
+```bash
+# 1. Telegram 命令
+/status   # 查看 bot 状态、会话信息、运行时间
+/stats    # 查看 token 使用情况、内存占用
+
+# 2. 日志文件
+tail -f logs/activity.log   # 活动日志（JSON 格式）
+tail -f bot.log            # 标准输出日志
+tail -f bot-error.log      # 错误日志
+
+# 3. 审计日志
+tail -f /tmp/claude-telegram-audit.log  # 所有操作审计
 ```
 
 ### Docker 部署
@@ -213,7 +284,27 @@ WORKDIR /app
 COPY . .
 RUN bun install
 
+# 创建日志目录
+RUN mkdir -p logs
+
 CMD ["bun", "run", "src/index.ts"]
+```
+
+```bash
+# 构建镜像
+docker build -t hedda-bot .
+
+# 运行容器（自动重启）
+docker run -d \
+  --name hedda-bot \
+  --restart unless-stopped \
+  -v $(pwd)/.env:/app/.env \
+  -v $(pwd)/memory:/app/memory \
+  -v $(pwd)/logs:/app/logs \
+  hedda-bot
+
+# 查看日志
+docker logs -f hedda-bot
 ```
 
 ## 🐛 故障排除
