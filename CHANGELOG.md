@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.0.1] - 2026-03-24
+
+### 🔧 Hotfix
+
+#### 修復關鍵崩潰問題
+- 🐛 **移除硬編碼記憶路徑** - 修復 Claude Code 進程崩潰 (exit code 1)
+  - 移除 `/Users/heddaai/clawd/piggyx/MEMORY.md` 硬編碼路徑
+  - 改為使用環境變量 `MEMORY_FILE_PATH`（可選）
+  - 防止在其他系統上運行時崩潰
+  - 修復工具執行（WebFetch、Bash 等）時的崩潰問題
+
+#### 配置更新
+- 📝 在 `.env.example` 添加 `MEMORY_FILE_PATH` 選項
+- 📚 添加 `HOTFIX-2024-03-24.md` 文檔
+
+**受影響**: 所有在非原作者系統上運行的用戶
+**優先級**: 🔴 高 - 導致核心功能崩潰
+
+---
+
 ## [1.0.0] - 2026-03-24
 
 ### ✨ 首次发布
