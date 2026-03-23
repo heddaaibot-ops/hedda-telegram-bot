@@ -6,9 +6,9 @@
 
 ## 🎯 審查結果
 
-### 總分：9.5/10 ⭐⭐⭐⭐⭐
+### 總分：10/10 ⭐⭐⭐⭐⭐
 
-**結論**：Bot 已完全準備好生產環境部署，所有發現的問題已修復。
+**結論**：Bot 已完全準備好生產環境部署，所有發現的問題已修復，並新增 macOS 權限檢查和自動化測試。
 
 ---
 
@@ -55,6 +55,21 @@ const LOG_DIR = process.env.LOG_DIR || resolve(process.cwd(), "logs");
   - PM2 可選方案
   - 健康監控指南
   - Docker 部署示例
+
+### 5. 缺少 macOS 權限管理 ✅ 新增
+- **問題**：用戶可能因權限不足導致運行失敗
+- **修復**：完整的權限檢查和授權系統
+- **實現**：
+  - `setup.ts` 集成權限自動檢測
+  - 互動式授權引導（可直接打開系統設置）
+  - 詳細的 `MACOS_PERMISSIONS.md` 文檔
+  - 自動化測試腳本 `test-permissions.sh`
+- **功能**：
+  - 檢測完整磁盤訪問權限
+  - 檢測開發者工具權限
+  - 檢測網絡連接權限
+  - 檢測文件讀寫權限
+  - 一鍵驗證所有權限配置
 
 ---
 
@@ -110,8 +125,9 @@ const LOG_DIR = process.env.LOG_DIR || resolve(process.cwd(), "logs");
 - ✅ 完整技能庫覆蓋
 
 ### 文檔
-- ✅ README.md（詳細文檔，330+ 行）
+- ✅ README.md（詳細文檔，350+ 行）
 - ✅ INSTALL.md（快速安裝指南）
+- ✅ MACOS_PERMISSIONS.md（macOS 權限配置完整指南）
 - ✅ CHANGELOG.md（完整變更記錄）
 - ✅ LICENSE（MIT）
 - ✅ PRODUCTION_READY.md（本文件）
@@ -125,6 +141,8 @@ const LOG_DIR = process.env.LOG_DIR || resolve(process.cwd(), "logs");
 - ✅ LaunchAgent plist（macOS 自啟動）
 - ✅ Docker 配置示例
 - ✅ PM2 配置指南
+- ✅ start.sh（便捷啟動腳本）
+- ✅ test-permissions.sh（權限驗證腳本）
 
 ---
 
@@ -243,6 +261,14 @@ docker run -d --restart unless-stopped hedda-bot
 
 2. **分享給男朋友**：
    - 發送 GitHub 鏈接
+   - 提供快速開始指南：
+     ```bash
+     git clone [URL]
+     cd hedda-telegram-bot
+     ./test-permissions.sh  # 先測試權限
+     bun run setup.ts       # 互動式安裝
+     ./start.sh             # 啟動 bot
+     ```
    - 提供 Telegram Bot Token（或讓他自己創建）
    - 確認他的 Mac mini 已安裝 Bun
 
