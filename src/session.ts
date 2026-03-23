@@ -249,9 +249,12 @@ class ClaudeSession {
 
       messageToSend = datePrefix + memoryPrefix + message;
     } else if (this.messageCount % 10 === 0 && this.messageCount > 0) {
-      // Every 10 messages in a resumed session, remind to check MEMORY.md for important context
-      // This helps recover from context truncation
-      const contextReminder = `[提醒：這是一個繼續中的對話。如果你覺得遺漏了重要資訊，請快速查看 /Users/heddaai/clawd/piggyx/MEMORY.md 確認關鍵內容。]\n\n`;
+      // Every 10 messages in a resumed session, optionally remind to check MEMORY.md
+      let contextReminder = "";
+      const memoryPath = process.env.MEMORY_FILE_PATH;
+      if (memoryPath) {
+        contextReminder = `[Reminder: This is an ongoing conversation. If you feel you're missing important context, please check ${memoryPath} for key information.]\n\n`;
+      }
       messageToSend = contextReminder + message;
     }
 

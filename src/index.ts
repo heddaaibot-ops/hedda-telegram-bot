@@ -99,28 +99,22 @@ console.log("Starting bot...");
 const botInfo = await bot.api.getMe();
 console.log(`Bot started: @${botInfo.username}`);
 
-// Auto-load memory on startup
+// Check for memory configuration
 try {
-  const memoryFiles = [
-    "/Users/heddaai/clawd/piggyx/MEMORY.md",
-    "/Users/heddaai/clawd/piggyx/inspiration_library.md",
-    "/Users/heddaai/clawd/piggyx/polymarket_research.md",
-    "/Users/heddaai/clawd/piggyx/polymarket_small_traders.md",
-    "/Users/heddaai/clawd/piggyx/polymarket_tips_summary.md",
-    "/Users/heddaai/clawd/piggyx/trading_strategy.md",
-    "/Users/heddaai/clawd/kol-database.md",
-    "/Users/heddaai/clawd/piggyx/telegram_topics.md",
-  ];
-
-  console.log("📖 Loading memory files...");
-  for (const file of memoryFiles) {
-    if (existsSync(file)) {
-      console.log(`  ✓ ${file.split('/').pop()}`);
-    }
+  const memoryPath = process.env.MEMORY_FILE_PATH;
+  if (memoryPath && existsSync(memoryPath)) {
+    console.log(`📖 Memory file configured: ${memoryPath}`);
+    console.log("✅ Bot ready!");
+  } else if (memoryPath) {
+    console.warn(`⚠️  Memory file not found: ${memoryPath}`);
+    console.log("✅ Bot ready (without memory)");
+  } else {
+    console.log("ℹ️  No memory file configured (set MEMORY_FILE_PATH to enable)");
+    console.log("✅ Bot ready!");
   }
-  console.log("✅ Memory loaded! Ready for Hedda 姐姐 🩵");
 } catch (e) {
-  console.warn("Memory load failed:", e);
+  console.warn("Memory check failed:", e);
+  console.log("✅ Bot ready!");
 }
 
 // Check for pending restart message to update
